@@ -1,12 +1,12 @@
 import fitz
 
 class PDFUtility:
-    def __init__(self, input_file, output_file):
+    def __init__(self, input_file, output_file,color):
         self.input_file = input_file
         self.output_file = output_file
-        self.blue = (0, 0, 1)
+        self.color = color
     
-    def add_bookmarks_from_text(self, search_string, bookmark_title):
+    def add_bookmarks_from_text(self, search_string):
         # Open the input PDF
         my_pdf = fitz.open(self.input_file)
 
@@ -15,7 +15,7 @@ class PDFUtility:
             for word in matchWords:  
                 annot = n_page.add_rect_annot(word)
                 annot.set_border(width=0)
-                annot.set_colors(stroke=self.blue, fill=self.blue)
+                annot.set_colors(stroke=self.color, fill=self.color)
                 annot.set_opacity(0.3)
                 annot.update() 
 
