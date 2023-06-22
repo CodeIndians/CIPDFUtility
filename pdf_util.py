@@ -8,7 +8,7 @@ class PDFUtility:
 
         # Open the input PDF
         self.my_pdf = fitz.open(input_file)
-        
+
         # intialize the empty book mark list
         self.bookmark_list =[]
     
@@ -18,6 +18,7 @@ class PDFUtility:
 
         # navigate through all the pages
         for n_page in self.my_pdf: 
+
             # search for will return the rects
             matchWordQuads = n_page.search_for(search_string)
 
@@ -25,7 +26,7 @@ class PDFUtility:
             for wordQuad in matchWordQuads: 
                 
                 # check to ignore white space rectangles
-                if(wordQuad.height < 5):
+                if(wordQuad.height < 5 or wordQuad.width < 5):
                     continue
 
                 # annotate the search strings
@@ -43,8 +44,19 @@ class PDFUtility:
                 y_center = (y0 + y1) / 2
 
                 # off set to the visible screen position
-                x_center -= 50
-                y_center += 50
+                if n_page.rotation == 0:
+                    x_center -= 50
+                    y_center -= 50
+                elif n_page.rotation == 90:
+                    x_center += 50
+                    y_center -= 50
+                elif n_page.rotation == 180:
+                    x_center += 50
+                    y_center += 50
+                elif n_page.rotation == 270:
+                    x_center -= 50
+                    y_center += 50
+                    
 
                 # corner cases
                 if(x_center < 0):
