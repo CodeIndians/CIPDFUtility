@@ -1,3 +1,6 @@
 *.pyc
 *.pdf
 .vscode/
+build/
+dist/
+*.spec
