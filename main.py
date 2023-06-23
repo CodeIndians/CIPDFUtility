@@ -2,48 +2,37 @@ from pdf_util import PDFUtility
 import PySimpleGUI as sg
 import os
 import random
+from pdf_util import color_dict
 
-color_dict = {
-    'Red': (139, 0, 0),
-    'Green': (0, 100, 0),
-    'Blue': (0, 0, 139),
-    'Purple': (75, 0, 130),
-    'Gray': (64, 64, 64),
-    'Brown': (101, 67, 33),
-    'Cyan': (0, 139, 139),
-    'Magenta': (139, 0, 139),
-    'Olive Green': (85, 107, 47),
-    'Slate Gray': (47, 79, 79),
-    'Teal': (0, 128, 128),
-    'Orchid': (153, 50, 204),
-    'Salmon': (233, 150, 122),
-    'Khaki': (189, 183, 107),
-    'Turquoise': (0, 206, 209)
-}
-
-def bookMarkAdderMain(input_file_path, output_folder_path):
+def bookMarkAdderMain(input_file_path, output_folder_path,search_strings):
     input_file = input_file_path
 
     # construct output file path based the folder path
     output_file = os.path.join(output_folder_path,os.path.basename(input_file))
 
-    #should read this from the file
-    search_texts = [" O.C. ", " Shear Wall ", " On-center ", " Panel ", " Roof ", " Low Eave ", " Parapet " , " Bump-out "]
+    # print(search_strings)
 
-    pdf_bookmark_adder = PDFUtility(input_file, output_file,(0,0,1))
+    #should read this from the file
+    # search_texts = [" O.C. ", " Shear Wall ", " On-center ", " Panel ", " Roof ", " Low Eave ", " Parapet " , " Bump-out "]
+
+    search_texts = [sublist[0] for sublist in search_strings]
+
+    search_text_colors = [sublist[1] for sublist in search_strings]
+
+    pdf_bookmark_adder = PDFUtility(input_file, output_file)
 
     # loop through the search text and call bookmark adder function on each of the search string
-    for text in search_texts:
-        pdf_bookmark_adder.add_bookmarks_from_text(text)
+    for i in range(len(search_texts)):
+        pdf_bookmark_adder.add_bookmarks_from_text(search_texts[i],color_dict[search_text_colors[i]])
     pdf_bookmark_adder.save_pdf_file()
 
-def bookMarkAdderBulk(input_file_paths, output_folder_path):
+def bookMarkAdderBulk(input_file_paths, output_folder_path,search_strings):
     
     #iterate through all the input file path locations
     for input_file_path in input_file_paths:
 
         # call the main function which generate the bookmarked pdf
-        bookMarkAdderMain(input_file_path,output_folder_path)
+        bookMarkAdderMain(input_file_path,output_folder_path,search_strings)
 
 
 # Define the layout of the window
@@ -107,7 +96,9 @@ while True:
             sg.popup_error('No search strings are present', title = "Empty Search String")
         else:
             # Process all the files in the list box
-            bookMarkAdderBulk(selected_files,output_folder)
+            bookMarkAdderBulk(selected_files,output_folder,search_strings)
+        
+        print(f'Process completed')
 
     if event == 'Remove':
         # fetch the selected file list
