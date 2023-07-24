@@ -99,6 +99,7 @@ while True:
             bookMarkAdderBulk(selected_files,output_folder,search_strings)
         
         print(f'Process completed')
+        sg.popup_ok('Files are processed')
 
     if event == 'Remove':
         # fetch the selected file list
@@ -122,12 +123,28 @@ while True:
                 # Remove trailing newline character
                 line = line.rstrip('\n')
                 lines.append(line)
-            temp_strings = [' ' + string + ' ' for string in lines]
-            search_strings.clear
-            for string in temp_strings:
-                search_strings.append([string,random.choice(list(color_dict.keys()))])
 
+            # earlier we were appending spaces, commenting but not removing for now
+            #temp_strings = [' ' + string + ' ' for string in lines]
+            temp_strings = lines
+
+            # clear the existing search strings
+            # This will recreate the list again
+            search_strings.clear()
+
+            color_sequence = list(color_dict.keys()) # Define the color sequence
+
+            current_color_index = 0  # Initialize the index for the color sequence
+
+            for string in temp_strings:
+                # Use the current color from the sequence instead of random.choice
+                search_strings.append([string, color_sequence[current_color_index]])
+                # Increment the index to move to the next color in the sequence
+                current_color_index = (current_color_index + 1) % len(color_sequence)
+            
+            # update the list in the window
             window['-SEARCHLIST-'].update(values=search_strings)
+            
     
     if event == 'Set Color':
         # print (search_strings)
@@ -141,10 +158,6 @@ while True:
         
         window['-SEARCHLIST-'].update(values=search_strings)
         # print(selected_search_string)
-
-
-
-      
 
 # Close the window
 window.close()
