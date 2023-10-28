@@ -31,6 +31,9 @@ def bookMarkAdderBulk(input_file_paths, output_folder_path,search_strings):
     #iterate through all the input file path locations
     for input_file_path in input_file_paths:
 
+        #sort the search strings
+        search_strings = sorted(search_strings)
+
         # call the main function which generate the bookmarked pdf
         bookMarkAdderMain(input_file_path,output_folder_path,search_strings)
 
